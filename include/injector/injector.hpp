@@ -9,22 +9,25 @@
 
 namespace injector
 {
-
-    using detail::ConstructorFactory;
-    using detail::FunctionFactory;
     using detail::ConstantFactory;
+    using detail::FunctionFactory;
+    using detail::ConstructorFactory;
 
     using detail::InstanceStorage;
     using detail::SingletonInstanceStorage;
 
     using detail::IComponentProvider;
     using detail::ComponentProviderBase;
-    using detail::NonCastingComponentProvider;
     using detail::CastingComponentProvider;
+    using detail::NonCastingComponentProvider;
 
     class Injector
     {
     public:
+        /**
+         * Add binding to given type.
+         * @tparam T target for binding
+         */
         template<class T>
         void add()
         {
@@ -34,6 +37,12 @@ namespace injector
             add_registration<T>(std::move(storage));
         }
 
+        /**
+         * Try add binding to given type.
+         * This method only adds given type if it has not already been added before
+         * @tparam T target for binding
+         * @see add
+         */
         template<class T>
         void try_add()
         {
@@ -43,6 +52,11 @@ namespace injector
             }
         }
 
+        /**
+         * Add binding from Base to Derived type
+         * @tparam Base base on which binding will be performed
+         * @tparam Derived actual type that will be constructed when requesting Base type
+         */
         template<class Base, class Derived>
         void add()
         {
@@ -52,6 +66,13 @@ namespace injector
             add_registration<Base, Derived>(std::move(storage));
         }
 
+        /**
+         * Try to add binding from Base to Derived type.
+         * This method only adds given binding if Base has not already been added before
+         * @tparam Base base type on which binding will be performed
+         * @tparam Derived actual type that will be constructed when requesting Base type
+         * @see add
+         */
         template<class Base, class Derived>
         void try_add()
         {
@@ -61,6 +82,10 @@ namespace injector
             }
         }
 
+        /**
+         * Add binding to given type in singleton scope (each request to given type will produce same object).
+         * @tparam T target for binding
+         */
         template<class T>
         void add_singleton()
         {
@@ -70,6 +95,12 @@ namespace injector
             add_registration<T>(std::move(storage));
         }
 
+        /**
+         * Try to add binding to given type in singleton scope (each request to given type will produce same object).
+         * This method only adds given type if it has not already been added before
+         * @tparam T target for binding
+         * @seem add_singleton
+         */
         template<class T>
         void try_add_singleton()
         {
@@ -79,6 +110,11 @@ namespace injector
             }
         }
 
+        /**
+         * Add binding from Base to Derived type in singleton scope (each request to Base type will produce same Derived instance object).
+         * @tparam Base base on which binding will be performed
+         * @tparam Derived Derived actual type that will be constructed when requesting Base type
+         */
         template<class Base, class Derived>
         void add_singleton()
         {
@@ -88,6 +124,12 @@ namespace injector
             add_registration<Base, Derived>(std::move(storage));
         }
 
+        /**
+         * Try to add binding from Base to Derived type in singleton scope (each request to Base type will produce same Derived instance object).
+         * This method only adds given binding if Base has not already been added before
+         * @tparam Base base on which binding will be performed
+         * @tparam Derived Derived actual type that will be constructed when requesting Base type
+         */
         template<class Base, class Derived>
         void try_add_singleton()
         {
