@@ -26,6 +26,7 @@ namespace injector
     public:
         /**
          * Add binding to given type.
+         * With this binding given type object will be constructed on each retrieval request.
          * @tparam T target for binding
          */
         template<class T>
@@ -39,7 +40,8 @@ namespace injector
 
         /**
          * Try add binding to given type.
-         * This method only adds given type if it has not already been added before
+         * This method only adds given type if it has not already been added.
+         * With this binding given type object will be constructed on each retrieval request.
          * @tparam T target for binding
          * @see add
          */
@@ -53,7 +55,8 @@ namespace injector
         }
 
         /**
-         * Add binding from Base to Derived type
+         * Add binding from Base to Derived type.
+         * With this binding given type object will be constructed on each retrieval request.
          * @tparam Base base on which binding will be performed
          * @tparam Derived actual type that will be constructed when requesting Base type
          */
@@ -68,7 +71,8 @@ namespace injector
 
         /**
          * Try to add binding from Base to Derived type.
-         * This method only adds given binding if Base has not already been added before
+         * This method only adds given binding if Base has not already been added.
+         * With this binding given type object will be constructed on each retrieval request.
          * @tparam Base base type on which binding will be performed
          * @tparam Derived actual type that will be constructed when requesting Base type
          * @see add
@@ -84,6 +88,7 @@ namespace injector
 
         /**
          * Add binding to given type in singleton scope (each request to given type will produce same object).
+         * With this binding given type will be created only on first retrieval request, on subsequent requests it will return same object
          * @tparam T target for binding
          */
         template<class T>
@@ -97,7 +102,8 @@ namespace injector
 
         /**
          * Try to add binding to given type in singleton scope (each request to given type will produce same object).
-         * This method only adds given type if it has not already been added before
+         * This method only adds given type if it has not already been added.
+         * With this binding given type will be created only on first retrieval request, on subsequent requests it will return same object
          * @tparam T target for binding
          * @seem add_singleton
          */
@@ -112,6 +118,7 @@ namespace injector
 
         /**
          * Add binding from Base to Derived type in singleton scope (each request to Base type will produce same Derived instance object).
+         * With this binding given type will be created only on first retrieval request, on subsequent requests it will return same object
          * @tparam Base base on which binding will be performed
          * @tparam Derived Derived actual type that will be constructed when requesting Base type
          */
@@ -126,7 +133,8 @@ namespace injector
 
         /**
          * Try to add binding from Base to Derived type in singleton scope (each request to Base type will produce same Derived instance object).
-         * This method only adds given binding if Base has not already been added before
+         * This method only adds given binding if Base type has not already been added.
+         * With this binding given type will be created only on first retrieval request, on subsequent requests it will return same object
          * @tparam Base base on which binding will be performed
          * @tparam Derived Derived actual type that will be constructed when requesting Base type
          */
@@ -139,6 +147,12 @@ namespace injector
             }
         }
 
+        /**
+         * Add binding to given type with function for instance retrieval.
+         * With this binding given function will be invoked on each retrieval request
+         * @tparam T target for binding
+         * @param fn function to invoke when creating given type object
+         */
         template<class T>
         void add(const std::function<std::shared_ptr<T>()>& fn)
         {
@@ -148,6 +162,13 @@ namespace injector
             add_registration<T>(std::move(storage));
         }
 
+        /**
+         * Try add binding to given type with function for instance retrieval.
+         * This method only adds binding if type has not already been added.
+         * With this binding given function will be invoked on each retrieval request
+         * @tparam T target for binding
+         * @param fn function to invoke when creating given type object
+         */
         template<class T>
         void try_add(const std::function<std::shared_ptr<T>()>& fn)
         {
@@ -157,6 +178,13 @@ namespace injector
             }
         }
 
+        /**
+         * Add binding from Base to Derived type with function as instance retrieval.
+         * With this binding given function will be invoked on each retrieval request
+         * @tparam Base base on which binding will be performed
+         * @tparam Derived actual type that will be constructed when requesting Base type
+         * @param fn function to invoke when creating given Base type object
+         */
         template<class Base, class Derived>
         void add(const std::function<std::shared_ptr<Derived>()>& fn)
         {
@@ -166,6 +194,14 @@ namespace injector
             add_registration<Base, Derived>(std::move(storage));
         }
 
+        /**
+         * Try add binding from Base to Derived type with function as instance retrieval.
+         * This method only adds binding if Base type has not already been added.
+         * With this binding given function will be invoked on each retrieval request.
+         * @tparam Base base on which binding will be performed
+         * @tparam Derived actual type that will be constructed when requesting Base type
+         * @param fn function to invoke when creating given Base type object
+         */
         template<class Base, class Derived>
         void try_add(const std::function<std::shared_ptr<Derived>()>& fn)
         {
@@ -175,6 +211,12 @@ namespace injector
             }
         }
 
+        /**
+         * Add binding to given type in singleton scope with function for instance retrieval.
+         * With this binding given function will be invoked only on first retrieval request, on subsequent requests it will return same object
+         * @tparam T target for binding
+         * @param fn function to invoke when creating given type object
+         */
         template<class T>
         void add_singleton(const std::function<std::shared_ptr<T>()>& fn)
         {
@@ -184,6 +226,13 @@ namespace injector
             add_registration<T>(std::move(storage));
         }
 
+        /**
+         * Try add binding to given type in singleton scope with function for instance retrieval.
+         * This method only adds binding if type has not already been added.
+         * With this binding given function will be invoked only on first retrieval request, on subsequent requests it will return same object
+         * @tparam T target for binding
+         * @param fn function to invoke when creating given type object
+         */
         template<class T>
         void try_add_singleton(const std::function<std::shared_ptr<T>()>& fn)
         {
@@ -193,6 +242,13 @@ namespace injector
             }
         }
 
+        /**
+         * Add binding from Base to Derived type in singleton scope with function as instance retrieval.
+         * With this binding given function will be invoked only on first retrieval request, on subsequent requests it will return same object
+         * @tparam Base base on which binding will be performed
+         * @tparam Derived actual type that will be constructed when requesting Base type
+         * @param fn function to invoke when creating given Base type object
+         */
         template<class Base, class Derived>
         void add_singleton(const std::function<std::shared_ptr<Derived>()>& fn)
         {
@@ -202,6 +258,14 @@ namespace injector
             add_registration<Base, Derived>(std::move(storage));
         }
 
+        /**
+         * Try add binding from Base to Derived type in singleton scope with function as instance retrieval.
+         * This method only adds binding if Base type has not already been added.
+         * With this binding given function will be invoked only on first retrieval request, on subsequent requests it will return same object
+         * @tparam Base base on which binding will be performed
+         * @tparam Derived actual type that will be constructed when requesting Base type
+         * @param fn function to invoke when creating given Base type object
+         */
         template<class Base, class Derived>
         void try_add_singleton(const std::function<std::shared_ptr<Derived>()>& fn)
         {
@@ -211,6 +275,14 @@ namespace injector
             }
         }
 
+        /**
+         * Add binding from Base to Derived type with given object.
+         * With this binding value same object will be returned on each retrieval request.
+         * This effectively makes given binding a binding in singleton scope
+         * @tparam Base base on which binding will be performed
+         * @tparam Derived actual type that will be constructed when requesting Base type
+         * @param data value to return when requesting Base type object
+         */
         template<class Base, class Derived>
         void add(const std::shared_ptr<Derived>& data)
         {
@@ -220,6 +292,15 @@ namespace injector
             add_registration<Base, Derived>(std::move(storage));
         }
 
+        /**
+         * Try add binding from Base to Derived type with given object.
+         * This method only adds binding if type has not already been added.
+         * With this binding value same object will be returned on each retrieval request.
+         * This effectively makes given binding a binding in singleton scope
+         * @tparam Base base on which binding will be performed
+         * @tparam Derived actual type that will be constructed when requesting Base type
+         * @param data value to return when requesting Base type object
+         */
         template<class Base, class Derived>
         void try_add(const std::shared_ptr<Derived>& data)
         {
@@ -302,11 +383,6 @@ namespace injector
             return m_Registrations.find(type_id<T>()) != m_Registrations.end();
         }
 
-        void clear() noexcept
-        {
-            m_Registrations.clear();
-        }
-
     private:
         template<class T>
         std::shared_ptr<T> get_unchecked()
@@ -328,8 +404,9 @@ namespace injector
         template<class Base, class Derived>
         void add_registration(std::unique_ptr<InstanceStorage<Derived>>&& storage)
         {
-            auto provider = std::make_unique<CastingComponentProvider<Base, Derived>>(std::move(storage));
+            static_assert(std::is_base_of_v<Base, Derived>, "Cannot bind unrelated types");
 
+            auto provider = std::make_unique<CastingComponentProvider<Base, Derived>>(std::move(storage));
             m_Registrations[type_id<Base>()].push_back(std::move(provider));
         }
 
@@ -337,7 +414,6 @@ namespace injector
         void add_registration(std::unique_ptr<InstanceStorage<T>>&& storage)
         {
             auto provider = std::make_unique<NonCastingComponentProvider<T>>(std::move(storage));
-
             m_Registrations[type_id<T>()].push_back(std::move(provider));
         }
 

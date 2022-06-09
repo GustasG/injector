@@ -6,7 +6,7 @@
 namespace injector
 {
     class Injector;
-}
+} // namespace injector
 
 namespace injector::detail
 {
