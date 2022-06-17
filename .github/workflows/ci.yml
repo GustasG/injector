@@ -1,4 +1,4 @@
-name: build
+name: ci
 
 on:
   push:
@@ -15,20 +15,24 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
+          - macos-11
+          - windows-2022
         compiler:
           - gcc-11
+          - llvm-13.0.0
         build_type:
           - Debug
           - Release
 
         include:
-          - compiler: gcc-11
-            gcov_executable: gcov
+          - os: windows-2022
+            compiler: msvc
+            build_type: Debug
 
-          # - os: ubuntu-20.04
-          #   compiler: gcc-11
-          #   build_type: Debug
-          #   gcov_executable: gcov
+          - os: windows-2022
+            compiler: msvc
+            build_type: Release
+
 
     steps:
       - name: Checkout Repository
@@ -45,22 +49,23 @@ jobs:
         uses: aminya/setup-cpp@v1
         with:
           compiler: ${{ matrix.compiler }}
+          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
+
           cmake: true
           ninja: true
-          gcovr: true
-          opencppcoverage: true
 
       - name: Configure CMake
-        run: cmake -B ./build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DOPT_ENABLE_COVERAGE=${{ matrix.build_type == 'Debug' }}
+        run: cmake -B ./build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
 
       - name: Build
         run: cmake --build ./build/test --config ${{matrix.build_type}}
 
-      - name: Unix - Test and coverage
+      - name: Run Tests
         working-directory: ./build/test
-        run: |
-          ctest -C ${{matrix.build_type}}
-          gcovr -j ${{env.nproc}} --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
+        run: ctest -C ${{matrix.build_type}}
+          
+
+      # gcovr -j ${{env.nproc}} --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
 
       # - name: Publish to codecov
       #   uses: codecov/codecov-action@v2
