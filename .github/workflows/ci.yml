@@ -48,7 +48,7 @@ jobs:
         run: cmake -B ./build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
 
       - name: Build
-        run: cmake --build ./build --target injector-tests --config ${{matrix.build_type}} -j 4
+        run: cmake --build ./build --target injector-tests --config ${{matrix.build_type}} -j 8
 
       - name: Run Tests
         working-directory: ./build
@@ -73,7 +73,7 @@ jobs:
         run: cmake -B ./build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage -O0 -fno-inline"
 
       - name: Build
-        run: cmake --build ./build --target injector-tests --config Debug -j 4
+        run: cmake --build ./build --target injector-tests --config Debug -j 8
 
       - name: Test and Coverage
         working-directory: ./build
