@@ -70,7 +70,7 @@ jobs:
           gcovr: true
 
       - name: Configure CMake
-        run: cmake -B ./build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} --coverage -g -O1"
+        run: cmake -B ./build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage -O0 -fno-inline"
 
       - name: Build
         run: cmake --build ./build --target injector-tests --config Debug -j 4
