@@ -53,14 +53,7 @@ jobs:
       - name: Run Tests
         working-directory: ./build
         run: ctest -C ${{matrix.build_type}}
-          
 
-      # - name: Publish to codecov
-      #   uses: codecov/codecov-action@v2
-      #   with:
-      #     flags: ${{ runner.os }}
-      #     name: ${{ runner.os }}-coverage
-      #     files: ./build/coverage.xml
 
   Coverage:
     runs-on: ubuntu-latest
@@ -87,3 +80,9 @@ jobs:
         run: |
           ctest -C Debug
           gcovr --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable gcov
+
+      - name: Upload coverage to codacy
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_TOKEN }}
+          coverage-reports: ./build/coverage.xml
