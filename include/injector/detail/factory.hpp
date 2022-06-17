@@ -28,7 +28,7 @@ namespace injector::detail
     class ConstructorFactory : public ComponentFactory<T>
     {
     public:
-        std::shared_ptr<T> build(Injector& injector) override
+        std::shared_ptr<T> build(Injector&  /*injector*/) override
         {
             return nullptr;
         }
@@ -39,13 +39,13 @@ namespace injector::detail
     class ConstructorFactory<T, typename std::enable_if_t<std::is_default_constructible_v<T> && !std::is_abstract_v<T>>> : public ComponentFactory<T>
     {
     public:
-        std::shared_ptr<T> build(Injector& injector) override
+        std::shared_ptr<T> build(Injector&  /*injector*/) override
         {
             return std::make_shared<T>();
         }
     };
 
-    // Specialization for constructors up to 16 arguments
+    // Specialization for constructors up to 32 arguments
     template<class T>
     class ConstructorFactory<T, typename std::enable_if_t<!std::is_default_constructible_v<T> && !std::is_abstract_v<T>>> : public ComponentFactory<T>
     {
@@ -68,20 +68,36 @@ namespace injector::detail
                 ConstructorArgumentResolver<T>(injector),
                 ConstructorArgumentResolver<T>(injector),
                 ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
                 ConstructorArgumentResolver<T>(injector));
         }
 
     private:
         template<class Arg1, class Arg2, class... Args,
                  typename std::enable_if_t<std::is_constructible_v<T, Arg1, Arg2, Args...>, bool> = true>
-        std::shared_ptr<T> try_build(Arg1& arg1, Arg2& a2, Args&&... args)
+        std::shared_ptr<T> try_build(Arg1& arg1, Arg2& arg2, Args&&... args)
         {
-            return std::make_shared<T>(arg1, a2, std::forward<Args>(args)...);
+            return std::make_shared<T>(arg1, arg2, std::forward<Args>(args)...);
         }
 
         template<class Arg1, class Arg2, class... Args,
                  typename std::enable_if_t<!std::is_constructible_v<T, Arg1, Arg2, Args...>, bool> = true>
-        std::shared_ptr<T> try_build(Arg1& arg1, Arg2& arg2, Args&&... args)
+        std::shared_ptr<T> try_build(Arg1&  /*arg1*/, Arg2& arg2, Args&&... args)
         {
             return try_build(arg2, std::forward<Args>(args)...);
         }
@@ -95,7 +111,7 @@ namespace injector::detail
 
         template<class Arg,
                  typename std::enable_if_t<!std::is_constructible_v<T, Arg>, bool> = true>
-        std::shared_ptr<T> try_build(Arg& arg)
+        std::shared_ptr<T> try_build(Arg&  /*arg*/)
         {
             return nullptr;
         }
@@ -110,7 +126,7 @@ namespace injector::detail
         {
         }
 
-        std::shared_ptr<T> build(Injector& injector) override
+        std::shared_ptr<T> build(Injector&  /*injector*/) override
         {
             return m_Factory();
         }
@@ -128,7 +144,7 @@ namespace injector::detail
         {
         }
 
-        std::shared_ptr<T> build(Injector& injector) override
+        std::shared_ptr<T> build(Injector&  /*injector*/) override
         {
             return m_Data;
         }

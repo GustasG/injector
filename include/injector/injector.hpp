@@ -154,7 +154,7 @@ namespace injector
          * @param fn function to invoke when creating given type object
          */
         template<class T>
-        void add(const std::function<std::shared_ptr<T>()>& fn)
+        void add(const std::function<std::shared_ptr<T>()>& fn) // NOLINT short name
         {
             auto factory = std::make_unique<FunctionFactory<T>>(fn);
             auto storage = std::make_unique<InstanceStorage<T>>(std::move(factory));
@@ -170,7 +170,7 @@ namespace injector
          * @param fn function to invoke when creating given type object
          */
         template<class T>
-        void try_add(const std::function<std::shared_ptr<T>()>& fn)
+        void try_add(const std::function<std::shared_ptr<T>()>& fn) // NOLINT short name
         {
             if (!contains<T>())
             {
@@ -186,7 +186,7 @@ namespace injector
          * @param fn function to invoke when creating given Base type object
          */
         template<class Base, class Derived>
-        void add(const std::function<std::shared_ptr<Derived>()>& fn)
+        void add(const std::function<std::shared_ptr<Derived>()>& fn) // NOLINT short name
         {
             auto factory = std::make_unique<FunctionFactory<Derived>>(fn);
             auto storage = std::make_unique<InstanceStorage<Derived>>(std::move(factory));
@@ -203,7 +203,7 @@ namespace injector
          * @param fn function to invoke when creating given Base type object
          */
         template<class Base, class Derived>
-        void try_add(const std::function<std::shared_ptr<Derived>()>& fn)
+        void try_add(const std::function<std::shared_ptr<Derived>()>& fn) // NOLINT short name
         {
             if (!contains<Base>())
             {
@@ -218,7 +218,7 @@ namespace injector
          * @param fn function to invoke when creating given type object
          */
         template<class T>
-        void add_singleton(const std::function<std::shared_ptr<T>()>& fn)
+        void add_singleton(const std::function<std::shared_ptr<T>()>& fn) // NOLINT short name
         {
             auto factory = std::make_unique<FunctionFactory<T>>(fn);
             auto storage = std::make_unique<SingletonInstanceStorage<T>>(std::move(factory));
@@ -234,7 +234,7 @@ namespace injector
          * @param fn function to invoke when creating given type object
          */
         template<class T>
-        void try_add_singleton(const std::function<std::shared_ptr<T>()>& fn)
+        void try_add_singleton(const std::function<std::shared_ptr<T>()>& fn) // NOLINT short name
         {
             if (!contains<T>())
             {
@@ -250,7 +250,7 @@ namespace injector
          * @param fn function to invoke when creating given Base type object
          */
         template<class Base, class Derived>
-        void add_singleton(const std::function<std::shared_ptr<Derived>()>& fn)
+        void add_singleton(const std::function<std::shared_ptr<Derived>()>& fn) // NOLINT short name
         {
             auto factory = std::make_unique<FunctionFactory<Derived>>(fn);
             auto storage = std::make_unique<SingletonInstanceStorage<Derived>>(std::move(factory));
@@ -267,7 +267,7 @@ namespace injector
          * @param fn function to invoke when creating given Base type object
          */
         template<class Base, class Derived>
-        void try_add_singleton(const std::function<std::shared_ptr<Derived>()>& fn)
+        void try_add_singleton(const std::function<std::shared_ptr<Derived>()>& fn) // NOLINT short name
         {
             if (!contains<Base>())
             {
@@ -310,7 +310,6 @@ namespace injector
             }
         }
 
-    public:
         // get<T>
         template<class T,
                  typename std::enable_if_t<!is_vector_v<T> && !is_shared_v<T>, bool> = true>
@@ -351,7 +350,7 @@ namespace injector
             using provider_base = ComponentProviderBase<instance_type>;
 
             std::vector<std::shared_ptr<instance_type>> instances;
-            auto it = m_Registrations.find(type_id<instance_type>());
+            auto it = m_Registrations.find(type_id<instance_type>()); // NOLINT short name
 
             if (it != m_Registrations.end())
             {
@@ -376,7 +375,6 @@ namespace injector
             return get<std::vector<typename T::value_type::element_type>>();
         }
 
-    public:
         template<class T>
         [[nodiscard]] bool contains() const noexcept
         {
@@ -387,7 +385,7 @@ namespace injector
         template<class T>
         std::shared_ptr<T> get_unchecked()
         {
-            auto it = m_Registrations.find(type_id<T>());
+            auto it = m_Registrations.find(type_id<T>()); // NOLINT short name
 
             if (it != m_Registrations.end())
             {
@@ -417,7 +415,6 @@ namespace injector
             m_Registrations[type_id<T>()].push_back(std::move(provider));
         }
 
-    private:
         std::unordered_map<std::size_t, std::vector<std::unique_ptr<IComponentProvider>>> m_Registrations;
     };
 } // namespace injector
