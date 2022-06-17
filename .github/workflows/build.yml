@@ -24,8 +24,6 @@ jobs:
           - ubuntu-20.04
         compiler:
           - gcc-11
-        generator:
-          - "Ninja Multi-Config"
         build_type:
           - Debug
           - Release
@@ -34,24 +32,22 @@ jobs:
           - compiler: gcc-11
             gcov_executable: gcov
 
-          # This exists solely to make sure a non-multiconfig build works
           - os: ubuntu-20.04
             compiler: gcc-11
             generator: "Unix Makefiles"
             build_type: Debug
             gcov_executable: gcov
 
-
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Setup Cache
-        uses: /actions/setup_cache
-        with:
-          compiler: ${{ matrix.compiler }}
-          build_type: ${{ matrix.build_type }}
-          generator: ${{ matrix.generator }}
+      # - name: Setup Cache
+      #   uses: actions/setup_cache
+      #   with:
+      #     compiler: ${{ matrix.compiler }}
+      #     build_type: ${{ matrix.build_type }}
+      #     generator: ${{ matrix.generator }}
 
       - name: Setup Cpp
         uses: aminya/setup-cpp@v1
@@ -61,12 +57,9 @@ jobs:
 
           cmake: true
           ninja: true
-          conan: true
-          vcpkg: false
           ccache: true
           clangtidy: ${{ env.CLANG_TIDY_VERSION }}
           cppcheck: true
-
           gcovr: true
           opencppcoverage: true
 
