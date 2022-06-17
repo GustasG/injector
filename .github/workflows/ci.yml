@@ -54,41 +54,40 @@ jobs:
         working-directory: ./build
         run: ctest -C ${{matrix.build_type}}
 
+  Coverage:
+    runs-on: ubuntu-latest
 
-  # Coverage:
-  #   runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v3
+      - name: Setup Cpp
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: gcc-11
+          cmake: true
+          gcovr: true
 
-  #     - name: Setup Cpp
-  #       uses: aminya/setup-cpp@v1
-  #       with:
-  #         compiler: gcc-11
-  #         cmake: true
-  #         gcovr: true
+      - name: Configure CMake
+        run: cmake -B ./build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} --coverage -O0"
 
-  #     - name: Configure CMake
-  #       run: cmake -B ./build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage -O0 -fno-inline"
+      - name: Build
+        run: cmake --build ./build --target injector-tests --config Debug -j 8
 
-  #     - name: Build
-  #       run: cmake --build ./build --target injector-tests --config Debug -j 8
+      - name: Test Coverage
+        working-directory: ./build
+        run: |
+          ctest -C Debug
+          gcovr --root ../ --print-summary --xml-pretty --xml coverage.xml
 
-  #     - name: Test and Coverage
-  #       working-directory: ./build
-  #       run: |
-  #         ctest -C Debug
-  #         gcovr --root ../ --print-summary --xml-pretty --xml coverage.xml .
+      - name: Upload coverage to codacy
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./build/coverage.xml
 
-  #     - name: Upload coverage to codacy
-  #       uses: codacy/codacy-coverage-reporter-action@v1
-  #       with:
-  #         project-token: ${{ secrets.CODACY_TOKEN }}
-  #         coverage-reports: ./build/coverage.xml
-
-  #     - name: Upload coverage to codecov
-  #       uses: codecov/codecov-action@v2.1.0
-  #       with:
-  #         token: ${{ secrets.CODECOV_TOKEN }}
-  #         files: ./build/coverage.xml
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./build/coverage.xml
