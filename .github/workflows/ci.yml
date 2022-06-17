@@ -1,4 +1,4 @@
-name: test
+name: ci
 
 on:
   push:
@@ -86,4 +86,4 @@ jobs:
         working-directory: ./build
         run: |
           ctest -C Debug
-          gcovr --delete --root ../../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable gcov
+          gcovr --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable gcov
