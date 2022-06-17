@@ -1,4 +1,4 @@
-name: ci
+name: test
 
 on:
   push:
@@ -27,32 +27,17 @@ jobs:
         include:
           - os: windows-2022
             compiler: msvc
-            build_type: Debug
-
-          - os: windows-2022
-            compiler: msvc
-            build_type: Release
-
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
-      # - name: Setup Cache
-      #   uses: actions/setup_cache
-      #   with:
-      #     compiler: ${{ matrix.compiler }}
-      #     build_type: ${{ matrix.build_type }}
-      #     generator: ${{ matrix.generator }}
 
       - name: Setup Cpp
         uses: aminya/setup-cpp@v1
         with:
           compiler: ${{ matrix.compiler }}
           vcvarsall: ${{ contains(matrix.os, 'windows' )}}
-
           cmake: true
-          ninja: true
 
       - name: Configure CMake
         run: cmake -B ./build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
