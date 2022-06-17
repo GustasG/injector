@@ -27,6 +27,11 @@ jobs:
         include:
           - os: windows-2022
             compiler: msvc
+            build_type: Debug
+
+          - os: windows-2022
+            compiler: msvc
+            build_type: Release
 
     steps:
       - name: Checkout Repository
