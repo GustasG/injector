@@ -7,9 +7,11 @@ project(injector
     LANGUAGES CXX
 )
 
-option(ENABLE_TESTING "Enable the tests" ON)
+option(INJECTOR_ENABLE_TESTING "Enable testing" ON)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(FetchContent)
 
@@ -22,11 +24,12 @@ add_library(${PROJECT_NAME} STATIC
     include/injector/injector.hpp
     include/injector/type_id.hpp    src/type_id.cpp
     include/injector/traits.hpp
-    include/injector/errors.hpp     src/errors.cpp)
+    include/injector/errors.hpp     src/errors.cpp
+)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
-if (ENABLE_TESTING)
+if (INJECTOR_ENABLE_TESTING)
     enable_testing()
     add_subdirectory(test)
 endif()

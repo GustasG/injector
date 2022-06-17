@@ -16,10 +16,16 @@ FetchContent_MakeAvailable(googletest)
 
 include(GoogleTest)
 
-add_executable(injector-tests
+add_executable(${PROJECT_NAME}
     injector_with_function.cpp
-    injector_with_value.cpp)
+    injector_with_value.cpp
+)
 
-target_link_libraries(injector-tests injector gtest gmock gtest_main)
+target_link_libraries(${PROJECT_NAME} 
+    injector
+    gtest
+    gmock
+    gtest_main
+)
 
-gtest_discover_tests(injector-tests)
+gtest_discover_tests(${PROJECT_NAME})
