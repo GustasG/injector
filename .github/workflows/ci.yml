@@ -86,3 +86,9 @@ jobs:
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
           coverage-reports: ./build/coverage.xml
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./build/coverage.xml
