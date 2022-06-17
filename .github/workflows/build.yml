@@ -6,13 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-  # Conan cache environment variables
-  CONAN_SYSREQUIRES_MODE: enabled
-  CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
-  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
-  CLANG_TIDY_VERSION: "13.0.0"
-
 jobs:
   Test:
     runs-on: ${{ matrix.os }}
@@ -32,11 +25,10 @@ jobs:
           - compiler: gcc-11
             gcov_executable: gcov
 
-          - os: ubuntu-20.04
-            compiler: gcc-11
-            generator: "Unix Makefiles"
-            build_type: Debug
-            gcov_executable: gcov
+          # - os: ubuntu-20.04
+          #   compiler: gcc-11
+          #   build_type: Debug
+          #   gcov_executable: gcov
 
     steps:
       - name: Checkout Repository
@@ -53,18 +45,13 @@ jobs:
         uses: aminya/setup-cpp@v1
         with:
           compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
-
           cmake: true
           ninja: true
-          ccache: true
-          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
-          cppcheck: true
           gcovr: true
           opencppcoverage: true
 
       - name: Configure CMake
-        run: cmake -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DOPT_ENABLE_COVERAGE=${{ matrix.build_type == 'Debug' }}
+        run: cmake -B ./build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DOPT_ENABLE_COVERAGE=${{ matrix.build_type == 'Debug' }}
 
       - name: Build
         run: cmake --build ./build/test --config ${{matrix.build_type}}
