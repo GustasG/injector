@@ -69,7 +69,7 @@ jobs:
           gcovr: true
 
       - name: Configure CMake
-        run: cmake -B ./build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} --coverage -O0"
+        run: cmake -B ./build -DCMAKE_BUILD_TYPE=Debug -DINJECTOR_ENABLE_TESTING=ON -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage"
 
       - name: Build
         run: cmake --build ./build --target injector-tests --config Debug -j 8
@@ -78,7 +78,7 @@ jobs:
         working-directory: ./build
         run: |
           ctest -C Debug
-          gcovr --root ../ --print-summary --xml-pretty --xml coverage.xml
+          gcovr --root .. --filter ../include --filter ../src --print-summary --xml coverage.xml
 
       - name: Upload coverage to codacy
         uses: codacy/codacy-coverage-reporter-action@v1

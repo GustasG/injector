@@ -7,7 +7,7 @@ project(injector
     LANGUAGES CXX
 )
 
-option(INJECTOR_ENABLE_TESTING "Enable testing" ON)
+option(INJECTOR_ENABLE_TESTING "Enable testing" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
